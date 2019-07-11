@@ -1,0 +1,18 @@
+---
+- name: include import playbook
+  hosts: instance2
+  become: yes
+
+  vars:
+    mytext: "hello"
+
+  tasks:
+  - name: ping test
+    ping:
+
+  - name: create folders
+    include: create-folder.yml
+
+  - name: create files
+    include: create-file.yml 
+   

@@ -1,0 +1,11 @@
+---
+- name: uninstall apache
+  hosts: instance3
+  become: yes
+
+  tasks:
+  - name: stop and disable apache
+    service: name=httpd state=stopped enabled=no
+
+  - name: uninstall apache
+    yum: name=httpd state=removed

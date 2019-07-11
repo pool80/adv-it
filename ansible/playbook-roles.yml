@@ -1,0 +1,7 @@
+---
+- name: install apache and upload my web page
+  hosts: "instance2"
+  become: yes
+
+  roles:
+    - { role: deploy-apaxhe-web, when: ansible_system == 'Linux' }

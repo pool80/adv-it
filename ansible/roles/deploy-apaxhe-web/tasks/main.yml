@@ -1,0 +1,38 @@
+---
+# tasks file for deploy-apaxhe-web
+
+- block: #===RedHat===
+
+  - name: install apache RedHat
+    yum: name=httpd state=latest
+
+  - name: start and enable apache "RedHat"
+    service: name=httpd state=started enabled=yes
+
+  when: ansible_os_family == "RedHat"
+
+
+- block: #===Debian===
+
+  - name: install apache Debian
+    apt: name=httpd2 state=latest
+
+  - name: start and enable apache "Debian"
+    service: name=apache2 state=started enabled=yes
+
+  when: ansible_os_family == "Debian"
+
+- name: generate index.html file
+  template: src=index.j2 dest={{ dest_folder }}/index.html mode=0555
+  notify: 
+    - restart apache RedHat
+    - restart apache Debian   
+
+ # - name: copy web page to servers
+ #   copy: src={{ item }} dest={{ dest_folder }} mode=0555
+
+ #   loop:
+ #     - "index.html"  
+ #   notify: 
+ #     - restart apache RedHat
+ #     - restart apache Debian

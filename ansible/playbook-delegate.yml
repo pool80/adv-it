@@ -1,0 +1,40 @@
+---
+- name: include import playbook
+  hosts: instance2
+  become: yes
+
+  vars:
+    mytext: "hello"
+
+  tasks:
+  - name: ping test
+    ping:
+
+  - name: unregistered server from load balancer
+    shell: echo this server {{ inventory_hostname }} was deregistered from load balancer, node name is {{ ansible_nodename }} >> /home/pool80/log.txt
+    delegate_to: 127.0.0.1
+
+  - name: update my database
+    shell: echo update database
+    run_once: true # запустить только один раз на первом сервере из инвентори
+
+  - name: create folders
+    include: create-folder.yml
+    delegate_to: instance3
+
+  - name: create files
+    include: create-file.yml 
+    delegate_to: instance3
+
+  - name: delay reboot my servers 
+    shell: sleep 3 && reboot now
+    async: 1
+    poll: 0
+
+  - name: wait till my servers come up online
+    wait_for:
+      host: "{{ inventory_hostname }}"
+      state: started
+      delay: 5
+      timeout: 45
+    delegate_to: 127.0.0.1

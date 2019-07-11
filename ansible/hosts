@@ -1,0 +1,9 @@
+[test_servers1]
+instance2 ansible_host=35.198.127.231 owner=pool80
+
+[test_servers2]
+instance3 ansible_host=34.67.92.24 owner=pool80
+
+[test:children]
+test_servers1
+test_servers2

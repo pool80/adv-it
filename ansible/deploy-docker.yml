@@ -1,0 +1,37 @@
+---
+- name: deploy Docker Centos7
+  hosts: test_servers1
+  become: yes
+
+  tasks:
+
+#  - name: yum update
+#    yum: name=* state=latest
+
+  - name: install required packages
+    yum:
+      name:
+        - yum-utils
+        - device-mapper-persistent-data
+        - lvm2
+        - python-pip
+      state: installed
+
+  - name: set up the stable repository
+    get_url:
+      url: https://download.docker.com/linux/centos/docker-ce.repo
+      dest: /etc/yum.repos.d/docer-ce.repo
+
+  - name: install Docker
+    yum:
+      name:
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+      state: installed
+
+  - name: start and enable Docker
+    service: name=docker state=started enabled=yes
+
+  - name: install Docker compose
+    pip: name=docker-compose state=present
